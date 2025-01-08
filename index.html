@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Shortener and Masker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .container h1 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            color: #333;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Link Shortener & Masker</h1>
+        <div class="form-group">
+            <label for="original-link">Link Asli</label>
+            <input type="url" id="original-link" placeholder="Masukkan link asli" required>
+        </div>
+        <div class="form-group">
+            <label for="masked-link">Link Tujuan Palsu</label>
+            <input type="url" id="masked-link" placeholder="Masukkan link tujuan palsu" required>
+        </div>
+        <button class="btn" onclick="generateLink()">Singkat & Sembunyikan</button>
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function generateLink() {
+            const originalLink = document.getElementById('original-link').value;
+            const maskedLink = document.getElementById('masked-link').value;
+
+            if (!originalLink || !maskedLink) {
+                alert('Mohon isi kedua kolom dengan link yang valid!');
+                return;
+            }
+
+            // Membuat link palsu yang disingkat
+            const resultDiv = document.getElementById('result');
+            const shortLink = `<a href="${originalLink}" target="_blank">${maskedLink}</a>`;
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = `Link berhasil dibuat: <br> ${shortLink}`;
+        }
+    </script>
+</body>
+</html>
