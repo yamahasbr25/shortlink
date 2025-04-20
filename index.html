@@ -3,113 +3,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Shortener and Masker</title>
+    <meta property="og:title" content="Secure URL Shortener">
+    <meta property="og:description" content="Amankan dan persingkat tautan Anda dengan aman">
+    <meta property="og:image" content="https://example.com/thumbnail.jpg">
+    <meta property="og:url" content="https://shortener.example.com">
+    <meta name="facebook-domain-verification" content="yourverificationcode">
+    <title>Secure URL Shortener</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
         .container {
-            background: #ffffff;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
             text-align: center;
         }
-
-        .container h1 {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
+        input[type="url"] {
+            width: 80%;
+            padding: 12px;
+            margin: 20px 0;
+            border: 2px solid #ddd;
             border-radius: 5px;
-            font-size: 1em;
-            color: #333;
         }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007BFF;
+        button {
+            background-color: #1877f2;
             color: white;
-            text-decoration: none;
+            padding: 12px 24px;
             border: none;
             border-radius: 5px;
-            font-size: 1em;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
-
-        .btn:hover {
-            background-color: #0056b3;
-        }
-
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            word-break: break-all;
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Link Shortener & Masker</h1>
-        <div class="form-group">
-            <label for="original-link">Link Asli</label>
-            <input type="url" id="original-link" placeholder="Masukkan link asli" required>
+        <h1>Secure URL Shortener</h1>
+        <form id="shortenerForm">
+            <input type="url" id="originalUrl" 
+                   placeholder="Masukkan URL lengkap Anda" required
+                   aria-label="URL to shorten">
+            <button type="submit">Persingkat</button>
+        </form>
+        <div id="result"></div>
+        
+        <div class="disclaimer">
+            <p>Layanan ini mematuhi kebijakan Facebook:</p>
+            <ul>
+                <li>Tidak mengandung konten terlarang</li>
+                <li>Memiliki redirect yang valid</li>
+                <li>Tidak melakukan penipuan atau phishing</li>
+            </ul>
+            <p>Baca <a href="/privacy">Kebijakan Privasi</a> kami</p>
         </div>
-        <div class="form-group">
-            <label for="masked-link">Link Tujuan Palsu</label>
-            <input type="url" id="masked-link" placeholder="Masukkan link tujuan palsu" required>
-        </div>
-        <button class="btn" onclick="generateLink()">Singkat & Sembunyikan</button>
-        <div id="result" class="result" style="display: none;"></div>
     </div>
 
     <script>
-        function generateLink() {
-            const originalLink = document.getElementById('original-link').value;
-            const maskedLink = document.getElementById('masked-link').value;
-
-            if (!originalLink || !maskedLink) {
-                alert('Mohon isi kedua kolom dengan link yang valid!');
+        document.getElementById('shortenerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const originalUrl = document.getElementById('originalUrl').value;
+            
+            // Validasi URL
+            if (!isValidUrl(originalUrl)) {
+                alert('Masukkan URL yang valid');
                 return;
             }
 
-            // Membuat link palsu yang disingkat
-            const resultDiv = document.getElementById('result');
-            const shortLink = `<a href="${originalLink}" target="_blank">${maskedLink}</a>`;
+            // Kirim ke backend (contoh menggunakan API)
+            try {
+                const response = await fetch('/api/shorten', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: originalUrl })
+                });
+                
+                const data = await response.json();
+                const shortUrl = `https://short.ex/${data.code}`;
+                
+                // Tampilkan hasil
+                document.getElementById('result').innerHTML = `
+                    <p>URL Pendek: <a href="${shortUrl}">${shortUrl}</a></p>
+                    <button onclick="copyToClipboard('${shortUrl}')">Salin</button>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
 
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = `Link berhasil dibuat: <br> ${shortLink}`;
+        function isValidUrl(string) {
+            try {
+                new URL(string);
+                return true;
+            } catch (_) {
+                return false;  
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            alert('URL disalin!');
         }
     </script>
 </body>
